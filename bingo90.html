@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Bingo Callobre 2026</title>
+    <style>
+        :root {
+            --gold: #ffcc00;
+            --gold-dark: #b8860b;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-dim: #475569;
+        }
+        * { box-sizing: border-box; }
+        body {
+            background-color: var(--bg);
+            color: white;
+            font-family: 'Arial Black', sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Panel Izquierdo */
+        .sidebar-left {
+            width: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 25px;
+            background: linear-gradient(180deg, #000 0%, #1e293b 100%);
+            border-radius: 20px;
+            border: 2px solid #334155;
+            margin-right: 20px;
+        }
+        .branding h1 {
+            color: var(--gold);
+            font-size: 1.8rem;
+            text-align: center;
+            margin: 0;
+            text-shadow: 2px 2px 0px #000;
+        }
+
+        /* Contenedor Principal con Banner de Premio */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* BANNER DE PREMIO PROFESIONAL */
+        .prize-banner {
+            background: #000;
+            border: 3px solid var(--gold);
+            border-radius: 15px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.2);
+        }
+        .prize-banner label {
+            color: var(--gold);
+            font-size: 1rem;
+            letter-spacing: 2px;
+        }
+        .prize-banner select {
+            background: transparent;
+            color: white;
+            border: none;
+            font-family: 'Arial Black';
+            font-size: 2rem;
+            cursor: pointer;
+            text-align: center;
+            outline: none;
+        }
+
+        .board-container {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 10px;
+            max-height: 85vh; 
+            width: 100%;
+        }
+        
+        /* BOLA CON GUÍA VISUAL POR DECENAS */
+        .cell {
+            aspect-ratio: 1 / 1;
+            /* El color de fondo se asigna por JS según la decena */
+            border-radius: 50%; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5vw;
+            color: rgba(255,255,255,0.4);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 2px 4px 8px rgba(0,0,0,0.4);
+            border: 1px solid rgba(0,0,0,0.3);
+        }
+
+        /* Colores sutiles por filas (Decenas) */
+        .row-0 { background: radial-gradient(circle at 35% 35%, #2d3748, #1a202c); }
+        .row-1 { background: radial-gradient(circle at 35% 35%, #312e81, #1e1b4b); }
+        .row-2 { background: radial-gradient(circle at 35% 35%, #064e3b, #022c22); }
+        .row-3 { background: radial-gradient(circle at 35% 35%, #78350f, #451a03); }
+        .row-4 { background: radial-gradient(circle at 35% 35%, #701a75, #4a044e); }
+        .row-5 { background: radial-gradient(circle at 35% 35%, #1e3a8a, #172554); }
+        .row-6 { background: radial-gradient(circle at 35% 35%, #3f3f46, #18181b); }
+        .row-7 { background: radial-gradient(circle at 35% 35%, #134e4a, #115e59); }
+        .row-8 { background: radial-gradient(circle at 35% 35%, #4c1d95, #2e1065); }
+
+        .cell.active {
+            background: radial-gradient(circle at 35% 35%, #ffffff 0%, var(--gold) 45%, var(--gold-dark) 100%) !important;
+            color: #000;
+            box-shadow: 0 0 25px var(--gold), inset -2px -2px 5px rgba(0,0,0,0.5);
+            border: none;
+            transform: scale(1.1);
+            z-index: 5;
+        }
+
+        /* Panel Derecho */
+        .sidebar-right {
+            width: 280px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-left: 20px;
+        }
+        .current-box {
+            background: #000;
+            border: 5px solid var(--gold);
+            border-radius: 50%;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 30px rgba(255, 204, 0, 0.3);
+        }
+        .current-ball { font-size: 6rem; color: white; line-height: 1; }
+        
+        .history-box {
+            background: rgba(0,0,0,0.4);
+            border-radius: 20px;
+            padding: 15px;
+            flex-grow: 1;
+            border: 1px solid #334155;
+        }
+        .hist-item {
+            font-size: 1.6rem;
+            margin: 10px 0;
+            padding: 10px;
+            background: radial-gradient(circle at 30% 30%, #475569, #1e293b);
+            border-radius: 50px;
+            text-align: center;
+            border: 1px solid #334155;
+        }
+        
+        button {
+            background: #7f1d1d;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar-left">
+        <div class="branding">
+            <h1>BINGO<br>CALLOBRE<br>2026</h1>
+        </div>
+        <div style="text-align: center;">
+            <div style="font-size: 1rem; color: var(--gold);">BOLAS SACADAS</div>
+            <div id="count" style="font-size: 4.5rem; margin-bottom: 20px;">0</div>
+            <button onclick="resetGame()">REINICIAR</button>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="prize-banner">
+            <label>OBJETIVO ACTUAL:</label>
+            <select id="prizeSelector">
+                <option value="LÍNEA">LÍNEA</option>
+                <option value="2 LÍNEAS">2 LÍNEAS</option>
+                <option value="BINGO">¡¡¡ BINGO !!!</option>
+            </select>
+        </div>
+        
+        <div class="board-container">
+            <div class="grid" id="grid"></div>
+        </div>
+    </div>
+
+    <div class="sidebar-right">
+        <div class="current-box">
+            <div style="color: var(--gold); font-size: 1rem;">ACTUAL</div>
+            <div class="current-ball" id="currentDisplay">--</div>
+        </div>
+        <div class="history-box">
+            <div style="color: var(--gold); text-align: center; margin-bottom: 10px;">ANTERIORES</div>
+            <div id="historyList"></div>
+        </div>
+    </div>
+
+    <script>
+        const grid = document.getElementById('grid');
+        const countDisplay = document.getElementById('count');
+        const currentDisplay = document.getElementById('currentDisplay');
+        const historyList = document.getElementById('historyList');
+        let activeBalls = [];
+
+        // Generar 90 bolas con clases de color por decena
+        for (let i = 1; i <= 90; i++) {
+            const div = document.createElement('div');
+            const rowIdx = Math.floor((i-1) / 10); // Determina la fila/decena
+            div.className = `cell row-${rowIdx}`;
+            div.innerText = i;
+            div.onclick = () => toggleBall(i, div);
+            grid.appendChild(div);
+        }
+
+        function toggleBall(num, element) {
+            if (element.classList.toggle('active')) {
+                activeBalls.unshift(num);
+                currentDisplay.innerText = num;
+            } else {
+                activeBalls = activeBalls.filter(b => b !== num);
+                currentDisplay.innerText = activeBalls.length > 0 ? activeBalls[0] : "--";
+            }
+            updateUI();
+        }
+
+        function updateUI() {
+            countDisplay.innerText = activeBalls.length;
+            historyList.innerHTML = "";
+            activeBalls.slice(1, 5).forEach(num => {
+                const item = document.createElement('div');
+                item.className = 'hist-item';
+                item.innerText = num;
+                historyList.appendChild(item);
+            });
+        }
+
+        function resetGame() {
+            if(confirm("¿Reiniciar Bingo Callobre 2026?")) {
+                document.querySelectorAll('.cell').forEach(c => c.classList.remove('active'));
+                activeBalls = [];
+                currentDisplay.innerText = "--";
+                document.getElementById('prizeSelector').value = "LÍNEA";
+                updateUI();
+            }
+        }
+    </script>
+</body>
+</html>

@@ -12,108 +12,111 @@
             --text-dim: #475569;
         }
         * { box-sizing: border-box; }
+        
+        html, body {
+            height: 100%; /* Forzamos a que ocupen el 100% real */
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Evita el scroll que oculta las bolas */
+        }
+
         body {
             background-color: var(--bg);
             color: white;
             font-family: 'Arial Black', sans-serif;
-            margin: 0;
-            padding: 20px;
             display: flex;
-            height: 100vh;
-            overflow: hidden;
+            padding: 10px;
         }
 
         /* Panel Izquierdo */
         .sidebar-left {
-            width: 250px;
+            width: 220px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 25px;
+            padding: 15px;
             background: linear-gradient(180deg, #000 0%, #1e293b 100%);
-            border-radius: 20px;
+            border-radius: 15px;
             border: 2px solid #334155;
-            margin-right: 20px;
+            margin-right: 10px;
+            flex-shrink: 0; /* Que no se encoja */
         }
         .branding h1 {
             color: var(--gold);
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             text-align: center;
             margin: 0;
             text-shadow: 2px 2px 0px #000;
         }
 
-        /* Contenedor Principal con Banner de Premio */
+        /* Contenedor Principal */
         .main-content {
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 10px;
+            min-width: 0; /* Evita desbordamiento en flex */
         }
 
-        /* BANNER DE PREMIO PROFESIONAL */
+        /* Banner de Premio Compacto */
         .prize-banner {
             background: #000;
-            border: 3px solid var(--gold);
-            border-radius: 15px;
-            padding: 10px;
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            padding: 5px 15px;
             display: flex;
             align-items: center;
-            justify-content: space-around;
-            box-shadow: 0 0 20px rgba(255, 204, 0, 0.2);
+            justify-content: center;
+            gap: 20px;
+            flex-shrink: 0;
         }
-        .prize-banner label {
-            color: var(--gold);
-            font-size: 1rem;
-            letter-spacing: 2px;
-        }
+        .prize-banner label { color: var(--gold); font-size: 0.8rem; letter-spacing: 1px; }
         .prize-banner select {
             background: transparent;
             color: white;
             border: none;
             font-family: 'Arial Black';
-            font-size: 2rem;
+            font-size: 1.5rem;
             cursor: pointer;
-            text-align: center;
             outline: none;
         }
 
+        /* TABLERO AUTO-AJUSTABLE */
         .board-container {
-            flex-grow: 1;
+            flex-grow: 1; /* Esto hace que el tablero use el espacio restante */
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 10px;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
             display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
+            min-height: 0; /* CRÍTICO: permite que el contenedor se encoja para que quepan las filas */
         }
 
         .grid {
             display: grid;
             grid-template-columns: repeat(10, 1fr);
-            gap: 10px;
-            max-height: 85vh; 
+            grid-template-rows: repeat(9, 1fr); /* Forzamos las 9 filas */
+            gap: 5px;
             width: 100%;
+            height: 100%; /* Ocupa el 100% del contenedor flexible */
         }
         
-        /* BOLA CON GUÍA VISUAL POR DECENAS */
         .cell {
-            aspect-ratio: 1 / 1;
-            /* El color de fondo se asigna por JS según la decena */
+            background-size: cover;
             border-radius: 50%; 
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5vw;
-            color: rgba(255,255,255,0.4);
+            font-size: min(2vw, 3vh); /* Se ajusta al ancho o alto, lo que sea menor */
+            color: rgba(255,255,255,0.3);
             cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 2px 4px 8px rgba(0,0,0,0.4);
-            border: 1px solid rgba(0,0,0,0.3);
+            transition: all 0.1s ease;
+            border: 1px solid rgba(0,0,0,0.2);
         }
 
-        /* Colores sutiles por filas (Decenas) */
+        /* Colores por filas */
         .row-0 { background: radial-gradient(circle at 35% 35%, #2d3748, #1a202c); }
         .row-1 { background: radial-gradient(circle at 35% 35%, #312e81, #1e1b4b); }
         .row-2 { background: radial-gradient(circle at 35% 35%, #064e3b, #022c22); }
@@ -127,62 +130,61 @@
         .cell.active {
             background: radial-gradient(circle at 35% 35%, #ffffff 0%, var(--gold) 45%, var(--gold-dark) 100%) !important;
             color: #000;
-            box-shadow: 0 0 25px var(--gold), inset -2px -2px 5px rgba(0,0,0,0.5);
+            box-shadow: 0 0 15px var(--gold);
             border: none;
-            transform: scale(1.1);
+            transform: scale(1.05);
             z-index: 5;
         }
 
         /* Panel Derecho */
         .sidebar-right {
-            width: 280px;
+            width: 220px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            margin-left: 20px;
+            gap: 10px;
+            margin-left: 10px;
+            flex-shrink: 0;
         }
         .current-box {
             background: #000;
-            border: 5px solid var(--gold);
+            border: 3px solid var(--gold);
             border-radius: 50%;
-            width: 200px;
-            height: 200px;
+            width: 160px;
+            height: 160px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 30px rgba(255, 204, 0, 0.3);
         }
-        .current-ball { font-size: 6rem; color: white; line-height: 1; }
+        .current-ball { font-size: 4rem; color: white; line-height: 1; }
         
         .history-box {
             background: rgba(0,0,0,0.4);
-            border-radius: 20px;
-            padding: 15px;
+            border-radius: 15px;
+            padding: 10px;
             flex-grow: 1;
             border: 1px solid #334155;
+            overflow: hidden;
         }
         .hist-item {
-            font-size: 1.6rem;
-            margin: 10px 0;
-            padding: 10px;
-            background: radial-gradient(circle at 30% 30%, #475569, #1e293b);
-            border-radius: 50px;
+            font-size: 1.2rem;
+            margin: 5px 0;
+            padding: 5px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
             text-align: center;
-            border: 1px solid #334155;
         }
         
         button {
             background: #7f1d1d;
             color: white;
             border: none;
-            padding: 15px;
-            border-radius: 10px;
+            padding: 10px;
+            border-radius: 8px;
             cursor: pointer;
             width: 100%;
             font-weight: bold;
-            font-size: 1rem;
         }
     </style>
 </head>
@@ -193,15 +195,15 @@
             <h1>BINGO<br>CALLOBRE<br>2026</h1>
         </div>
         <div style="text-align: center;">
-            <div style="font-size: 1rem; color: var(--gold);">BOLAS SACADAS</div>
-            <div id="count" style="font-size: 4.5rem; margin-bottom: 20px;">0</div>
+            <div style="font-size: 0.8rem; color: var(--gold);">BOLAS</div>
+            <div id="count" style="font-size: 3rem;">0</div>
             <button onclick="resetGame()">REINICIAR</button>
         </div>
     </div>
 
     <div class="main-content">
         <div class="prize-banner">
-            <label>OBJETIVO ACTUAL:</label>
+            <label>OBJETIVO:</label>
             <select id="prizeSelector">
                 <option value="LÍNEA">LÍNEA</option>
                 <option value="2 LÍNEAS">2 LÍNEAS</option>
@@ -216,11 +218,11 @@
 
     <div class="sidebar-right">
         <div class="current-box">
-            <div style="color: var(--gold); font-size: 1rem;">ACTUAL</div>
+            <div style="color: var(--gold); font-size: 0.7rem;">ACTUAL</div>
             <div class="current-ball" id="currentDisplay">--</div>
         </div>
         <div class="history-box">
-            <div style="color: var(--gold); text-align: center; margin-bottom: 10px;">ANTERIORES</div>
+            <div style="color: var(--gold); text-align: center; font-size: 0.8rem; margin-bottom: 5px;">ANTERIORES</div>
             <div id="historyList"></div>
         </div>
     </div>
@@ -232,10 +234,9 @@
         const historyList = document.getElementById('historyList');
         let activeBalls = [];
 
-        // Generar 90 bolas con clases de color por decena
         for (let i = 1; i <= 90; i++) {
             const div = document.createElement('div');
-            const rowIdx = Math.floor((i-1) / 10); // Determina la fila/decena
+            const rowIdx = Math.floor((i-1) / 10);
             div.className = `cell row-${rowIdx}`;
             div.innerText = i;
             div.onclick = () => toggleBall(i, div);
@@ -256,7 +257,7 @@
         function updateUI() {
             countDisplay.innerText = activeBalls.length;
             historyList.innerHTML = "";
-            activeBalls.slice(1, 5).forEach(num => {
+            activeBalls.slice(1, 6).forEach(num => {
                 const item = document.createElement('div');
                 item.className = 'hist-item';
                 item.innerText = num;
@@ -269,7 +270,6 @@
                 document.querySelectorAll('.cell').forEach(c => c.classList.remove('active'));
                 activeBalls = [];
                 currentDisplay.innerText = "--";
-                document.getElementById('prizeSelector').value = "LÍNEA";
                 updateUI();
             }
         }
